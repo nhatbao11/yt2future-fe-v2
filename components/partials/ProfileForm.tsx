@@ -4,20 +4,43 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import PrimaryButton from '@/components/common/PrimaryButton';
-import { handleUpdateProfile } from '@/app/[locale]/profile/actions';
+import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 export default function ProfileForm({ profile }: { profile: any }) {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
   // State để cập nhật ảnh preview khi sếp dán link mới
   const [avatarPreview, setAvatarPreview] = useState(profile?.avatarUrl || '/Logo.jpg');
 
   return (
-    <form action={async (formData) => {
+    <form onSubmit={async (e) => {
+      e.preventDefault();
       setLoading(true);
-      await handleUpdateProfile(formData);
-      setLoading(false);
-      // Phát sự kiện để Navbar tự cập nhật lại ảnh ngay lập tức
-      window.dispatchEvent(new Event('profileUpdated'));
+      const formData = new FormData(e.currentTarget);
+
+      // Cần map đúng tên trường để API hiểu
+      // API mong đợi: fullName, avatarUrl (string) hoặc avatarFile (file - nhưng form này thiên về link URL string)
+
+      try {
+        const res = await fetch('/api/auth/profile', {
+          method: 'PUT',
+          body: formData
+        });
+        const result = await res.json();
+
+        if (!res.ok) {
+          toast.error(result.message || 'Cập nhật thất bại!');
+        } else {
+          toast.success('Đã lưu thay đổi!');
+          router.refresh();
+          window.dispatchEvent(new Event('profileUpdated'));
+        }
+      } catch (err) {
+        toast.error('Lỗi kết nối server!');
+      } finally {
+        setLoading(false);
+      }
     }} className="space-y-6">
 
       <div className="flex flex-col items-center gap-4">
