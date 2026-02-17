@@ -1,9 +1,7 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { handleUpdateProfile } from './actions';
-import PrimaryButton from '@/components/common/PrimaryButton';
-import AvatarUpload from '@/components/partials/AvatarUpload';
 import { getTranslations } from 'next-intl/server';
+import ProfilePageClient from './ProfilePageClient';
 
 export default async function ProfilePage({
   params
@@ -33,35 +31,7 @@ export default async function ProfilePage({
           {t('title')}
         </h2>
 
-        <form action={handleUpdateProfile} className="space-y-6">
-          {/* AvatarUpload sẽ lo việc đẩy ảnh lên Cloudinary và trả về URL */}
-          <AvatarUpload initialAvatar={profile?.avatarUrl || '/Logo.jpg'} />
-
-          <div className="space-y-4">
-            <div className="group text-left">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">{t('fullName')}</label>
-              <input
-                name="fullName"
-                defaultValue={profile?.fullName || ''}
-                placeholder={t('fullNamePlaceholder')}
-                className="w-full bg-slate-50 border border-slate-200 p-4 mt-1 text-sm font-bold text-[#1a365d] rounded-xl outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 transition-all"
-              />
-            </div>
-
-            <div className="group text-left">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">{t('email')}</label>
-              <input
-                value={profile?.email || ''}
-                disabled
-                className="w-full bg-slate-100 border border-slate-200 p-4 mt-1 text-sm font-medium text-slate-400 rounded-xl cursor-not-allowed"
-              />
-            </div>
-          </div>
-
-          <div className="pt-4">
-            <PrimaryButton label={t('submit')} type="submit" fullWidth={true} className="py-4 shadow-lg shadow-yellow-200" />
-          </div>
-        </form>
+        <ProfilePageClient profile={profile} />
       </div>
     </div>
   );

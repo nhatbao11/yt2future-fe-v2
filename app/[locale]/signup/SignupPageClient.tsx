@@ -2,11 +2,12 @@
 
 import React, { useState } from 'react';
 import Link from '@/components/common/Link';
-import { handleSignup } from './actions';
+import { useRouter } from 'next/navigation';
 import PrimaryButton from '@/components/common/PrimaryButton';
 import PasswordField from '@/components/partials/PasswordField';
 import { FileText, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { toast } from 'react-hot-toast';
 
 interface SignupPageClientProps {
     errorMessage?: string;
@@ -16,7 +17,9 @@ interface SignupPageClientProps {
 export default function SignupPageClient({ errorMessage, successMessage }: SignupPageClientProps) {
     const t = useTranslations('auth.signUp');
     const tAuth = useTranslations('auth');
+    const router = useRouter();
     const [activePdf, setActivePdf] = useState<{ url: string; title: string } | null>(null);
+    const [loading, setLoading] = useState(false);
 
     const POLICY_LINKS = {
         privacy: "https://res.cloudinary.com/da0gdcrzn/raw/upload/v1766786574/yt_reports/pdf/uk7xgkdqggyvfrv2exyw",
@@ -54,7 +57,38 @@ export default function SignupPageClient({ errorMessage, successMessage }: Signu
                     )}
                 </div>
 
-                <form action={handleSignup} className="space-y-5">
+                <form onSubmit={async (e) => {
+                    e.preventDefault();
+                    setLoading(true);
+
+                    const formData = new FormData(e.currentTarget);
+                    const fullName = formData.get('fullName');
+                    const email = formData.get('email');
+                    const password = formData.get('password');
+                    const confirmPassword = formData.get('confirmPassword');
+
+                    try {
+                        const res = await fetch('/api/auth/signup', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ fullName, email, password, confirmPassword }),
+                        });
+
+                        const result = await res.json();
+
+                        if (!res.ok) {
+                            toast.error(result.message || 'Đăng ký thất bại!');
+                        } else {
+                            toast.success(result.message || 'Đăng ký thành công!');
+                            router.refresh();
+                            router.push('/signup?success=' + encodeURIComponent('Đăng ký thành công! Sếp đăng nhập ngay đi.'));
+                        }
+                    } catch (err) {
+                        toast.error('Lỗi kết nối server!');
+                    } finally {
+                        setLoading(false);
+                    }
+                }} className="space-y-5">
                     <div className="group">
                         <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">{t('name')}</label>
                         <input
@@ -106,9 +140,10 @@ export default function SignupPageClient({ errorMessage, successMessage }: Signu
 
                     <div className="pt-2">
                         <PrimaryButton
-                            label={tAuth('createAccount')}
+                            label={loading ? 'Creating...' : tAuth('createAccount')}
                             type="submit"
                             fullWidth={true}
+                            disabled={loading}
                             className="cursor-pointer hover:shadow-xl hover:shadow-yellow-100 active:scale-[0.97] transition-all py-4 font-black uppercase tracking-wider"
                         />
                     </div>
