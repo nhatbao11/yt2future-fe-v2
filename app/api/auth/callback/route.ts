@@ -20,7 +20,7 @@ export async function GET(request: Request) {
         const profile = {
           email: user.email || '',
           name: user.user_metadata.full_name || user.user_metadata.name || user.email?.split('@')[0],
-          picture: user.user_metadata.avatar_url || user.user_metadata.picture || ''
+          avatarUrl: user.user_metadata.avatar_url || user.user_metadata.picture || ''
         };
 
         try {
