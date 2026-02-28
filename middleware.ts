@@ -13,7 +13,6 @@ const handleI18nRouting = createMiddleware({
 });
 
 export default function middleware(request: any) {
-    console.log('[Middleware] Incoming request:', request.nextUrl.pathname);
     return handleI18nRouting(request);
 }
 
