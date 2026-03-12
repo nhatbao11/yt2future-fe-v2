@@ -48,7 +48,8 @@ export async function PUT(req: NextRequest) {
         }
 
         // 3. Call Backend API
-        const backendRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/auth/update-user`, {
+        const LOCAL_BACKEND_URL = process.env.LOCAL_API_URL || 'http://localhost:5000/api';
+        const backendRes = await fetch(`${LOCAL_BACKEND_URL}/auth/update-user`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

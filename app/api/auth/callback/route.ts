@@ -24,8 +24,9 @@ export async function GET(request: Request) {
         };
 
         try {
-          // 3. Gọi Backend để đồng bộ và lấy Token
-          const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+          // 3. Gọi Backend để đồng bộ và lấy Token (Ép gọi localhost:5000 để lách Nginx proxy)
+          const LOCAL_BACKEND_URL = process.env.LOCAL_API_URL || 'http://localhost:5000/api';
+          const API_URL = LOCAL_BACKEND_URL;
 
           const backendRes = await fetch(`${API_URL}/auth/grant-google-role`, {
             method: 'POST',
