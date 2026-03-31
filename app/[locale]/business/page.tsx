@@ -3,6 +3,21 @@ import BusinessFilter from '@/components/partials/BusinessFilter';
 import { Download, Eye, Calendar, User, Briefcase } from 'lucide-react';
 import Link from '@/components/common/Link';
 import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
+import type { Metadata } from 'next';
+
+type Props = {
+  params: Promise<{ locale: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'business_page' });
+  return {
+    title: t('title') + " | YT2Future",
+    description: "Discover our business reports and enterprise analysis inside YT2Future.",
+  };
+}
 
 export default function BusinessPage() {
   const t = useTranslations('business_page');
