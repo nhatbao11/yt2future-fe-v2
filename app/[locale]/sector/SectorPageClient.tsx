@@ -57,13 +57,13 @@ export default function SectorPage() {
   }, [page, activeCatId, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
+    <div className="min-h-screen bg-slate-50">
       <PageHeader title={t('title')} />
 
       <main className="max-w-[1440px] mx-auto px-4 md:px-12 py-10">
 
         {/* THANH ĐIỀU KHIỂN */}
-        <div className="mb-12 flex flex-col lg:flex-row items-center justify-between gap-6 border-b-2 border-slate-200 pb-8">
+        <div className="mb-10 flex flex-col lg:flex-row items-center justify-between gap-6 border-b border-slate-200 pb-7">
           <div className="flex flex-col md:flex-row items-center gap-4 w-full lg:w-auto">
             <div className="relative w-full lg:w-80">
               <input
@@ -71,7 +71,7 @@ export default function SectorPage() {
                 placeholder={t('search_placeholder')}
                 value={searchQuery}
                 onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-                className="w-full bg-white border-2 border-slate-300 pl-12 pr-4 py-3.5 text-sm text-slate-900 placeholder-slate-400 outline-none focus:border-[#001a41] transition-all shadow-sm"
+                className="w-full rounded-xl bg-white border border-slate-300 pl-12 pr-4 py-3.5 text-sm text-slate-900 placeholder-slate-400 outline-none focus:border-[#001a41] focus:ring-2 focus:ring-[#001a41]/15 transition-all shadow-sm"
               />
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-900" size={18} />
             </div>
@@ -83,13 +83,13 @@ export default function SectorPage() {
             >
               <button
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="w-full flex items-center justify-between gap-6 bg-white border-2 border-slate-300 px-5 py-3.5 text-sm text-slate-900 hover:border-[#001a41] transition-all"
+                className="w-full rounded-xl flex items-center justify-between gap-6 bg-white border border-slate-300 px-5 py-3.5 text-sm text-slate-900 hover:border-[#001a41] transition-all shadow-sm"
               >
                 <span>{categories.find(c => c.id === activeCatId)?.name || t('category_select')}</span>
                 <ChevronDown size={14} className={`text-slate-900 transition-transform duration-300 ${isFilterOpen ? 'rotate-180' : ''}`} />
               </button>
 
-              <div className={`absolute left-0 top-full mt-1 w-full lg:w-60 bg-white border-2 border-slate-900 z-50 shadow-2xl transition-all ${isFilterOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
+              <div className={`absolute left-0 top-full mt-1 w-full lg:w-60 bg-white border border-slate-200 rounded-xl z-50 shadow-xl transition-all ${isFilterOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
                 <button
                   onClick={() => { setActiveCatId(undefined); setPage(1); setIsFilterOpen(false); }}
                   className="w-full text-left px-5 py-4 text-sm hover:bg-slate-50 border-b border-slate-100 text-slate-900"
@@ -110,7 +110,7 @@ export default function SectorPage() {
           </div>
 
           {userData?.role === 'CTV' && (
-            <button onClick={() => setIsModalOpen(true)} className="w-full md:w-auto flex items-center justify-center gap-3 bg-[#001a41] text-white px-8 py-4 text-sm font-bold uppercase tracking-wider hover:bg-yellow-600 transition-all border-2 border-slate-900 shadow-md">
+            <button onClick={() => setIsModalOpen(true)} className="w-full md:w-auto rounded-xl flex items-center justify-center gap-3 bg-[#001a41] text-white px-8 py-4 text-sm font-bold uppercase tracking-wider hover:bg-[#00275f] transition-all shadow-md">
               <PlusCircle size={18} /> {t('add_report')}
             </button>
           )}
@@ -118,41 +118,41 @@ export default function SectorPage() {
 
         {/* DANH SÁCH BÁO CÁO */}
         {loading ? (
-          <div className="text-center py-20 text-sm animate-pulse text-slate-400">{t('syncing')}</div>
+          <div className="text-center py-20 text-sm animate-pulse text-slate-500">{t('syncing')}</div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
             {reports.map((report) => (
               <div
                 key={report.id}
                 onClick={() => setReadingPdfUrl(report.pdfUrl)}
-                className="group bg-white border-2 border-slate-200 flex flex-col cursor-pointer hover:shadow-2xl hover:border-[#001a41] transition-all duration-500"
+                className="group bg-white border border-slate-200 rounded-2xl overflow-hidden flex flex-col cursor-pointer hover:shadow-xl hover:border-[#001a41]/30 transition-all duration-300"
               >
-                <div className="aspect-video relative overflow-hidden bg-slate-50 border-b-2 border-slate-100">
-                  <img src={report.thumbnail || '/Logo.jpg'} className="w-full h-full object-cover lg:grayscale lg:group-hover:grayscale-0 transition-transform duration-700 group-hover:scale-105" alt={report.title} />
-                  <div className="absolute top-3 right-3 bg-[#001a41] text-white text-[8px] font-black px-2 py-1">{report.category?.name}</div>
+                <div className="aspect-video relative overflow-hidden bg-slate-100 border-b border-slate-100">
+                  <img src={report.thumbnail || '/Logo.jpg'} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt={report.title} />
+                  <div className="absolute top-3 right-3 rounded-full bg-[#001a41] text-white text-[10px] font-semibold px-2.5 py-1">{report.category?.name}</div>
                 </div>
 
                 <div className="p-6 flex flex-col justify-between flex-1 space-y-5">
                   <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-[9px] text-slate-500 font-black">
-                      <Calendar size={12} className="text-yellow-500" />
+                    <div className="flex items-center gap-2 text-[11px] text-slate-500 font-semibold">
+                      <Calendar size={14} className="text-amber-500" />
                       {new Date(report.createdAt).toLocaleDateString(locale === 'vi' ? 'vi-VN' : 'en-US')}
                     </div>
-                    <h3 className="text-lg font-bold leading-tight text-[#001a41] group-hover:text-yellow-600 transition-colors line-clamp-2 h-10">
+                    <h3 className="text-lg font-bold leading-tight text-[#001a41] group-hover:text-[#002a66] transition-colors line-clamp-2 h-14">
                       {report.title}
                     </h3>
                     <div className="relative group/desc">
-                      <p className="text-sm text-slate-500 line-clamp-2 leading-relaxed border-l-2 border-slate-300 pl-3 min-h-[32px]">
+                      <p className="text-sm text-slate-600 line-clamp-2 leading-relaxed border-l-2 border-slate-200 pl-3 min-h-[42px]">
                         "{report.description || t('no_desc')}"
                       </p>
                     </div>
                   </div>
 
                   <div className="pt-5 flex items-center justify-between border-t border-slate-100">
-                    <span className="text-[9px] text-slate-400 flex items-center gap-2 italic">
+                    <span className="text-[11px] text-slate-500 flex items-center gap-2">
                       <User size={12} className="text-[#001a41]" /> @{report.user?.fullName}
                     </span>
-                    <div className="flex items-center gap-2 text-[#001a41] text-sm group-hover:text-yellow-600 transition-all font-bold">
+                    <div className="flex items-center gap-2 text-[#001a41] text-sm group-hover:text-[#002a66] transition-all font-semibold">
                       <FileText size={14} /> {t('details')}
                     </div>
                   </div>
@@ -164,19 +164,19 @@ export default function SectorPage() {
 
         {/* PHÂN TRANG */}
         {totalPages > 1 && (
-          <div className="mt-16 flex justify-center items-center gap-4">
+          <div className="mt-14 flex justify-center items-center gap-4">
             <button
               disabled={page === 1}
               onClick={(e) => { e.stopPropagation(); setPage(page - 1); }}
-              className="px-6 py-2.5 border-2 border-slate-300 text-slate-900 hover:border-[#001a41] disabled:opacity-20 transition-all active:scale-95"
+              className="px-6 py-2.5 rounded-lg border border-slate-300 bg-white text-slate-900 hover:border-[#001a41] disabled:opacity-30 transition-all active:scale-95"
             >
               {t('prev')}
             </button>
-            <span className="text-[11px] text-slate-900">{t('page')} {page} / {totalPages}</span>
+            <span className="text-[12px] text-slate-700">{t('page')} {page} / {totalPages}</span>
             <button
               disabled={page === totalPages}
               onClick={(e) => { e.stopPropagation(); setPage(page + 1); }}
-              className="px-6 py-2.5 border-2 border-slate-300 text-slate-900 hover:border-[#001a41] disabled:opacity-20 transition-all active:scale-95"
+              className="px-6 py-2.5 rounded-lg border border-slate-300 bg-white text-slate-900 hover:border-[#001a41] disabled:opacity-30 transition-all active:scale-95"
             >
               {t('next')}
             </button>
