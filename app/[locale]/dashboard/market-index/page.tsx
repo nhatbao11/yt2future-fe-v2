@@ -93,6 +93,7 @@ export default function MarketIndexDashboard() {
   const [selectedRange, setSelectedRange] = useState<TimeRangeValue>("6m");
   const [isExpanded, setIsExpanded] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [isMobileView, setIsMobileView] = useState(false);
   const chartScrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -126,7 +127,9 @@ export default function MarketIndexDashboard() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (window.matchMedia("(max-width: 768px)").matches) {
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    setIsMobileView(isMobile);
+    if (isMobile) {
       setSelectedRange("1m");
     }
   }, []);
@@ -179,7 +182,8 @@ export default function MarketIndexDashboard() {
     if (!el) return;
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        el.scrollLeft = el.scrollWidth;
+        // Mobile: scroll to the far right so the latest candles + right Y-axis show first.
+        el.scrollLeft = Math.max(0, el.scrollWidth - el.clientWidth);
       });
     });
   }, [filteredRows.length, selectedRange, selectedSymbol]);
@@ -325,14 +329,14 @@ export default function MarketIndexDashboard() {
         samples: 120,
       },
       legend: {
-        display: true,
+        display: !isMobileView,
         labels: {
           filter: (item: { text?: string }) =>
             item.text !== "Mức cao" && item.text !== "Mức thấp" && item.text !== "focus-line",
         },
       },
       title: {
-        display: true,
+        display: !isMobileView,
         text: `Biểu đồ ${selectedSymbol}`,
         font: {
           size: 18,
@@ -497,6 +501,9 @@ export default function MarketIndexDashboard() {
             </button>
           </div>
 
+          <p className="mb-2 ml-3 text-lg font-bold text-slate-700 md:hidden">
+            Biểu đồ {selectedSymbol}
+          </p>
           <div ref={chartScrollRef} className="overflow-x-auto">
             <div
               className={`min-w-[560px] md:min-w-0 ${
@@ -510,6 +517,30 @@ export default function MarketIndexDashboard() {
               />
             </div>
           </div>
+
+          {/* Mobile: legend cố định dưới biểu đồ, ngoài vùng scroll — kéo ngang không bị trôi */}
+          {isMobileView && (
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 border-t border-slate-100 pt-3 md:hidden">
+              <div className="flex items-center gap-2 text-xs font-medium text-slate-700">
+                <span
+                  className="inline-block h-0.5 w-7 rounded-full"
+                  style={{
+                    backgroundColor: SYMBOL_COLORS[selectedSymbol] ?? "#2563eb",
+                  }}
+                />
+                <span>
+                  {selectedSymbol} Close
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-medium text-slate-700">
+                <span className="flex gap-0.5">
+                  <span className="inline-block h-2.5 w-2 rounded-sm bg-emerald-500/80" />
+                  <span className="inline-block h-2.5 w-2 rounded-sm bg-rose-500/80" />
+                </span>
+                <span>Thanh khoản</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
