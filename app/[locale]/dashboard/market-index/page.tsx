@@ -4,6 +4,8 @@ import { Chart } from "react-chartjs-2";
 import PageHeader from "@/components/layout/PageHeader";
 import {
   Chart as ChartJS,
+  LineController,
+  BarController,
   CategoryScale,
   LinearScale,
   PointElement,
@@ -20,6 +22,8 @@ import { Expand, Shrink } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 ChartJS.register(
+  LineController,
+  BarController,
   CategoryScale,
   LinearScale,
   PointElement,
