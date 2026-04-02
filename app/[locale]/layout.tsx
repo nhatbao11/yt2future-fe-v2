@@ -9,27 +9,37 @@ import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { locales } from '@/i18n/request';
 import ScrollToTop from "@/components/partials/ScrollToTop";
+import { getTranslations } from 'next-intl/server';
 
 const inter = Inter({ subsets: ["latin"] });
+
+/** Bật = true: không cho Google index bản tiếng Anh (/en/*), tránh trùng kết quả với /vi — vẫn cho user mở /en bình thường. */
+function seoNoindexEn(): boolean {
+  return process.env.SEO_NOINDEX_EN === "true" || process.env.NEXT_PUBLIC_SEO_NOINDEX_EN === "true";
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://yt2future.com";
-  
+  const t = await getTranslations({ locale, namespace: 'seo' });
+  const defaultTitle = t('defaultTitle');
+  const defaultDescription = t('defaultDescription');
+  const noindexEn = seoNoindexEn();
+
   return {
     metadataBase: new URL(baseUrl),
     title: {
-      template: "%s | YT2Future - Shaping Tomorrow",
-      default: "YT2Future | Shaping Tomorrow",
+      template: "%s | YT2Future",
+      default: defaultTitle,
     },
-    description: "Investment Solutions and Agile Innovation",
+    description: defaultDescription,
     openGraph: {
       type: "website",
       locale: locale,
       url: `${baseUrl}/${locale}`,
       siteName: "YT2Future",
-      title: "YT2Future | Shaping Tomorrow",
-      description: "Investment Solutions and Agile Innovation",
+      title: defaultTitle,
+      description: defaultDescription,
       images: [
         {
           url: "/Logo.jpg",
@@ -41,18 +51,28 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     },
     twitter: {
       card: "summary_large_image",
-      title: "YT2Future | Shaping Tomorrow",
-      description: "Investment Solutions and Agile Innovation",
+      title: defaultTitle,
+      description: defaultDescription,
       images: ["/Logo.jpg"],
     },
     alternates: {
       canonical: `${baseUrl}/${locale}`,
-      languages: {
-        vi: `${baseUrl}/vi`,
-        en: `${baseUrl}/en`,
-        "x-default": `${baseUrl}/vi`,
-      },
+      languages: noindexEn
+        ? {
+            vi: `${baseUrl}/vi`,
+            "x-default": `${baseUrl}/vi`,
+          }
+        : {
+            vi: `${baseUrl}/vi`,
+            en: `${baseUrl}/en`,
+            "x-default": `${baseUrl}/vi`,
+          },
     },
+    ...(noindexEn && locale === "en"
+      ? {
+          robots: { index: false, follow: true },
+        }
+      : {}),
   };
 }
 

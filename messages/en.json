@@ -1,4 +1,8 @@
 {
+    "seo": {
+        "defaultTitle": "YT2Future | Shaping Tomorrow",
+        "defaultDescription": "Investment insights, market analysis, and agile innovation at YT2Future."
+    },
     "common": {
         "readMore": "Read more",
         "learnMore": "Learn more",
@@ -225,6 +229,7 @@
     },
     "sector_page": {
         "title": "Sector Analysis",
+        "metaDescription": "Explore in-depth sector research and market reports on YT2Future.",
         "search_placeholder": "Search reports...",
         "category_select": "Select Category",
         "all_categories": "All Categories",

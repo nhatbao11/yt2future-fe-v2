@@ -8,14 +8,17 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'home' });
+  const t = await getTranslations({ locale, namespace: "home" });
+  const ts = await getTranslations({ locale, namespace: 'seo' });
+  const description = t('about.desc1').replace(/\s+/g, ' ').trim().slice(0, 160);
 
   return {
-    title: "YT2Future | Shaping Tomorrow",
-    description: "Investment Solutions and Agile Innovation",
-    // You can also use translations for dynamic SEO titles:
-    // title: t('hero.title') + ' ' + t('hero.titleHighlight'),
-    // description: t('hero.subtitle').substring(0, 160)
+    title: ts('defaultTitle'),
+    description,
+    openGraph: {
+      title: ts('defaultTitle'),
+      description,
+    },
   };
 }
 

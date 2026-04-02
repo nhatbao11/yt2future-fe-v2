@@ -10,9 +10,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'investment_page' });
 
+  const title = t('title') + ' | YT2Future';
+  const description = `${t('subtitle')}. ${t('main_title')}`;
+
   return {
-    title: t('title') + ' | YT2Future',
-    description: t('subtitle') + ". " + t('main_title'),
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+    },
+    twitter: {
+      title,
+      description,
+    },
   };
 }
 

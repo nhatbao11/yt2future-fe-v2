@@ -1,4 +1,8 @@
 {
+    "seo": {
+        "defaultTitle": "YT2Future | Kiến tạo tương lai",
+        "defaultDescription": "YT2Future — kiến thức đầu tư, phân tích thị trường và giải pháp tài chính cho nhà đầu tư Việt Nam."
+    },
     "common": {
         "readMore": "Đọc thêm",
         "learnMore": "Tìm hiểu thêm",
@@ -225,6 +229,7 @@
     },
     "sector_page": {
         "title": "Phân tích ngành",
+        "metaDescription": "Khám phá các báo cáo nghiên cứu chuyên sâu về các lĩnh vực khác nhau tại YT2Future.",
         "search_placeholder": "Tìm kiếm báo cáo...",
         "category_select": "Chọn danh mục",
         "all_categories": "Tất cả danh mục",

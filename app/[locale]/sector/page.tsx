@@ -12,7 +12,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: t('title') + ' | YT2Future',
-    description: "Khám phá các báo cáo nghiên cứu chuyên sâu về các lĩnh vực khác nhau tại YT2Future.",
+    description: t('metaDescription'),
+    openGraph: {
+      title: t('title') + ' | YT2Future',
+      description: t('metaDescription'),
+    },
   };
 }
 
